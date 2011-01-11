@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://www.symfony-project.org/schema/routing"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.symfony-project.org/schema/routing http://www.symfony-project.org/schema/routing/routing-1.0.xsd">
+
+    <!-- USER CONTROLLER -->
+    <route id="fos_user_admin_list" pattern="/user">
+        <default key="_controller">FOS\UserBundle:UserAdmin:list</default>
+    </route>
+
+    <route id="fos_user_admin_create" pattern="/user/create">
+        <default key="_controller">FOS\UserBundle:UserAdmin:create</default>
+    </route>
+
+    <route id="fos_user_admin_batch" pattern="/user/batch">
+        <default key="_controller">FOS\UserBundle:UserAdmin:batch</default>
+    </route>
+
+    <route id="fos_user_admin_update" pattern="/user/update">
+        <default key="_controller">FOS\UserBundle:UserAdmin:update</default>
+    </route>
+
+    <route id="fos_user_admin_edit" pattern="/user/:id/edit">
+        <default key="_controller">FOS\UserBundle:UserAdmin:edit</default>
+    </route>
+
+    <route id="fos_user__admin_delete" pattern="/user/:id/delete">
+        <default key="_controller">FOS\UserBundle:UserAdmin:delete</default>
+    </route>
+
+
+    <!-- GROUP CONTROLLER -->
+    <route id="fos_group_admin_list" pattern="/group">
+        <default key="_controller">FOS\UserBundle:GroupAdmin:list</default>
+    </route>
+
+    <route id="fos_group_admin_create" pattern="/group/create">
+        <default key="_controller">FOS\UserBundle:GroupAdmin:create</default>
+    </route>
+
+    <route id="fos_group_admin_batch" pattern="/group/batch">
+        <default key="_controller">FOS\UserBundle:GroupAdmin:batch</default>
+    </route>
+
+    <route id="fos_group_admin_update" pattern="/group/update">
+        <default key="_controller">FOS\UserBundle:GroupAdmin:update</default>
+    </route>
+
+    <route id="fos_group_admin_edit" pattern="/group/:id/edit">
+        <default key="_controller">FOS\UserBundle:GroupAdmin:edit</default>
+    </route>
+
+    <route id="fos_group_admin_delete" pattern="/group/:id/delete">
+        <default key="_controller">FOS\UserBundle:GroupAdmin:delete</default>
+    </route>
+
+</routes>

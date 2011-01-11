@@ -9,27 +9,32 @@
         <constraint name="Bundle\FOS\UserBundle\Validator\Unique">
             <option name="property">username</option>
             <option name="groups">Registration</option>
+            <option name="groups">admin</option>
         </constraint>
 
         <constraint name="Bundle\FOS\UserBundle\Validator\Unique">
             <option name="property">email</option>
             <option name="groups">Registration</option>
+            <option name="groups">admin</option>
         </constraint>
 
         <property name="username">
             <constraint name="NotBlank">
                 <option name="message">Please enter an username</option>
                 <option name="groups">Registration</option>
+                <option name="groups">admin</option>
             </constraint>
             <constraint name="MinLength">
                 <option name="limit">2</option>
                 <option name="message">The username is too short</option>
                 <option name="groups">Registration</option>
+                <option name="groups">admin</option>
             </constraint>
             <constraint name="MaxLength">
                 <option name="limit">255</option>
                 <option name="message">The username is too long</option>
                 <option name="groups">Registration</option>
+                <option name="groups">admin</option>
             </constraint>
         </property>
 
@@ -37,16 +42,19 @@
             <constraint name="NotBlank">
                 <option name="message">Please enter an email</option>
                 <option name="groups">Registration</option>
+                <option name="groups">admin</option>
             </constraint>
             <constraint name="MinLength">
                 <option name="limit">2</option>
                 <option name="message">The email is too short</option>
                 <option name="groups">Registration</option>
+                <option name="groups">admin</option>
             </constraint>
             <constraint name="MaxLength">
                 <option name="limit">255</option>
                 <option name="message">The email is too long</option>
                 <option name="groups">Registration</option>
+                <option name="groups">admin</option>
             </constraint>
         </property>
 

@@ -588,6 +588,16 @@ abstract class User implements UserInterface
     }
 
     /**
+     * set groups granted to the user
+     *
+     * @return Collection
+     */
+    public function setGroups($groups)
+    {
+        $this->groups = $groups;
+    }
+
+    /**
      * Gets the name of the groups which includes the user
      *
      * @return array
