@@ -10,6 +10,8 @@
 
 namespace Bundle\FOS\UserBundle\Model;
 
+use Bundle\FOS\UserBundle\Util\CanonicalizerInterface;
+
 use Symfony\Component\Security\Role\RoleInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,6 +29,8 @@ abstract class User implements UserInterface
     const ROLE_DEFAULT    = 'ROLE_USER';
     const ROLE_SUPERADMIN = 'ROLE_SUPERADMIN';
 
+    protected static $canonicalizer;
+
     protected $id;
 
     /**
@@ -37,12 +41,17 @@ abstract class User implements UserInterface
     /**
      * @var string
      */
-    protected $usernameLower;
+    protected $usernameCanonical;
 
     /**
      * @var string
      */
     protected $email;
+
+    /**
+     * @var string
+     */
+    protected $emailCanonical;
 
     /**
      * @var boolean
@@ -134,6 +143,11 @@ abstract class User implements UserInterface
      */
     protected $credentialsExpireAt;
 
+    public final static function setCanonicalizer(CanonicalizerInterface $canonicalizer)
+    {
+        self::$canonicalizer = $canonicalizer;
+    }
+
     public function __construct()
     {
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
@@ -175,7 +189,7 @@ abstract class User implements UserInterface
         if ($this->getSalt() !== $account->getSalt()) {
             return false;
         }
-        if ($this->username !== $account->getUsername()) {
+        if ($this->usernameCanonical !== $account->getUsernameCanonical()) {
             return false;
         }
         if ($this->isAccountNonExpired() !== $account->isAccountNonExpired()) {
@@ -222,13 +236,13 @@ abstract class User implements UserInterface
     }
 
     /**
-     * Get the username in lowercase used in search and sort queries
+     * Get the canonical username in search and sort queries
      *
      * @return string
      **/
-    public function getUsernameLower()
+    public function getUsernameCanonical()
     {
-        return $this->usernameLower;
+        return $this->usernameCanonical;
     }
 
     /**
@@ -252,6 +266,16 @@ abstract class User implements UserInterface
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Get the canonical email in search and sort queries
+     *
+     * @return string
+     **/
+    public function getEmailCanonical()
+    {
+        return $this->emailCanonical;
     }
 
     /**
@@ -462,7 +486,7 @@ abstract class User implements UserInterface
     public function setUsername($username)
     {
         $this->username = $username;
-        $this->usernameLower = mb_strtolower($username, mb_detect_encoding($username));
+        $this->usernameCanonical = self::$canonicalizer->canonicalize($username);
     }
 
     public function setAlgorithm($algorithm)
@@ -487,7 +511,8 @@ abstract class User implements UserInterface
      */
     public function setEmail($email)
     {
-        $this->email = mb_strtolower($email, mb_detect_encoding($email));
+        $this->email = $email;
+        $this->emailCanonical = self::$canonicalizer->canonicalize($email);
     }
 
     /**

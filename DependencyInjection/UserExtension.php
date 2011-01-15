@@ -31,7 +31,7 @@ class UserExtension extends Extension
 
         // load all service configuration files (the db_driver first)
         if (!$container->hasDefinition('security.encoder.fos_user')) {
-            foreach (array('controller', 'templating', 'email', 'twig', 'form', 'validator', 'security') as $basename) {
+            foreach (array('controller', 'templating', 'email', 'twig', 'form', 'validator', 'security', 'util') as $basename) {
                 $loader->load(sprintf('%s.xml', $basename));
             }
         }
@@ -61,6 +61,7 @@ class UserExtension extends Extension
             'model'         => 'fos_user.model.%s.class',
             'form'          => 'fos_user.form.%s.class',
             'controller'    => 'fos_user.controller.%s.class',
+            'util'          => 'fos_user.util.%s.class',
         ));
     }
 

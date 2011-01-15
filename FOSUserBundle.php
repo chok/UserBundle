@@ -14,13 +14,9 @@ use Symfony\Component\HttpKernel\Bundle\Bundle as BaseBundle;
 
 class FOSUserBundle extends BaseBundle
 {
-    /**
-     * Boots the Bundle.
-     */
     public function boot()
     {
-        if (!extension_loaded('mb_string')) {
-            require_once __DIR__.'/Util/mbstring.php';
-        }
+        $class = $this->container->get('fos_user.user_manager')->getClass();
+        call_user_func(array($class, 'setCanonicalizer'), $this->container->get('fos_user.util.canonicalizer'));
     }
 }
