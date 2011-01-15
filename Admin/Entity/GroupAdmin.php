@@ -11,28 +11,25 @@
 
 namespace Bundle\FOS\UserBundle\Admin\Entity;
 
-use Bundle\Sonata\BaseApplicationBundle\Admin\Admin;
+use Bundle\Sonata\BaseApplicationBundle\Admin\EntityAdmin as Admin;
 
 class GroupAdmin extends Admin
 {
     
     protected $class = 'Application\FOS\UserBundle\Entity\Group';
 
-    protected $list_fields = array(
+    protected $listFields = array(
         'name' => array('identifier' => true),
         'roles'
     );
 
-    protected $form_fields = array(
+    protected $formFields = array(
         'name',
         'roles'
     );
 
-
-    protected $base_route = 'fos_group_admin';
-
     // don't know yet how to get this value
-    protected $base_controller_name = 'UserBundle:PostAdmin';
+    protected $baseControllerName = 'FOS\UserBundle:GroupAdmin';
 
     public function getNewInstance()
     {

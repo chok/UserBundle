@@ -11,22 +11,22 @@
 
 namespace Bundle\FOS\UserBundle\Admin\Entity;
 
-use Bundle\Sonata\BaseApplicationBundle\Admin\Admin;
+use Bundle\Sonata\BaseApplicationBundle\Admin\EntityAdmin as Admin;
 
 class UserAdmin extends Admin
 {
 
     protected $class = 'Application\FOS\UserBundle\Entity\User';
 
-    protected $list_fields = array(
+    protected $listFields = array(
         'username' => array('identifier' => true),
         'email',
         'enabled',
         'locked',
-        'created_at',
+        'createdAt',
     );
 
-    protected $form_fields = array(
+    protected $formFields = array(
         'username',
         'email',
         'enabled',
@@ -38,7 +38,7 @@ class UserAdmin extends Admin
         'groups'
     );
 
-    protected $form_groups = array(
+    protected $formGroups = array(
         'General' => array(
             'fields' => array('username', 'email', 'plainPassword')
         ),
@@ -50,17 +50,15 @@ class UserAdmin extends Admin
         )
     );
 
-    protected $filter_fields = array(
+    protected $filterFields = array(
         'username',
         'locked',
         'email',
         'id',
     );
 
-    protected $base_route = 'fos_user_admin';
-
     // don't know yet how to get this value
-    protected $base_controller_name = 'UserBundle:PostAdmin';
+    protected $baseControllerName = 'FOS\UserBundle:UserAdmin';
 
 
     public function getForm($object, $fields)
@@ -75,6 +73,6 @@ class UserAdmin extends Admin
     {
         parent::preInsert($user);
 
-        $this->container->get('fos_user.user_manager')->updateUser($user);
+        $this->container->get('fos_user.user_manager')->updatePassword($user);
     }
 }
