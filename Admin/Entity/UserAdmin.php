@@ -58,7 +58,7 @@ class UserAdmin extends Admin
     );
 
     // don't know yet how to get this value
-    protected $baseControllerName = 'FOS\UserBundle:UserAdmin';
+    protected $baseControllerName = 'FOSUserBundle:UserAdmin';
 
 
     public function getForm($object, $fields)

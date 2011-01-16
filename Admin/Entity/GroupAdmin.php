@@ -29,7 +29,7 @@ class GroupAdmin extends Admin
     );
 
     // don't know yet how to get this value
-    protected $baseControllerName = 'FOS\UserBundle:GroupAdmin';
+    protected $baseControllerName = 'FOSUserBundle:GroupAdmin';
 
     public function getNewInstance()
     {
