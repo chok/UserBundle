@@ -2,7 +2,7 @@
 
 namespace Bundle\FOS\UserBundle\Document;
 
-class UserRepositoryTest extends \PHPUnit_Framework_TestCase
+class DocumentUserManagerTest extends \PHPUnit_Framework_TestCase
 {
     protected $userManager;
 
