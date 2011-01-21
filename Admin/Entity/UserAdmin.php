@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Bundle\FOS\UserBundle\Admin\Entity;
+namespace FOS\UserBundle\Admin\Entity;
 
 use Sonata\BaseApplicationBundle\Admin\EntityAdmin as Admin;
 
@@ -52,6 +52,10 @@ class UserAdmin extends Admin
         )
     );
 
+    protected $formOptions = array(
+        'validation_groups' => 'admin'
+    );
+
     protected $filterFields = array(
         'username',
         'locked',
@@ -61,15 +65,6 @@ class UserAdmin extends Admin
 
     // don't know yet how to get this value
     protected $baseControllerName = 'FOSUserBundle:UserAdmin';
-
-
-    public function getForm($object, $fields)
-    {
-        $form = parent::getForm($object, $fields);
-        $form->setValidationGroups(array('admin'));
-
-        return $form;
-    }
 
     public function preInsert($user)
     {

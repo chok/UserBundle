@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Bundle\FOS\UserBundle\Admin\Entity;
+namespace FOS\UserBundle\Admin\Entity;
 
 use Sonata\BaseApplicationBundle\Admin\EntityAdmin as Admin;
 
