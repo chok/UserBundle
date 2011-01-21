@@ -11,7 +11,7 @@
 
 namespace Bundle\FOS\UserBundle\Admin\Entity;
 
-use Bundle\Sonata\BaseApplicationBundle\Admin\EntityAdmin as Admin;
+use Sonata\BaseApplicationBundle\Admin\EntityAdmin as Admin;
 
 class GroupAdmin extends Admin
 {

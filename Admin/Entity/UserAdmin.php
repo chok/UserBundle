@@ -11,11 +11,13 @@
 
 namespace Bundle\FOS\UserBundle\Admin\Entity;
 
-use Bundle\Sonata\BaseApplicationBundle\Admin\EntityAdmin as Admin;
+use Sonata\BaseApplicationBundle\Admin\EntityAdmin as Admin;
 
 class UserAdmin extends Admin
 {
 
+    protected $maxPerPage = 25;
+    
     protected $class = 'Application\FOS\UserBundle\Entity\User';
 
     protected $listFields = array(
