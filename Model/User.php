@@ -11,7 +11,6 @@
 namespace Bundle\FOS\UserBundle\Model;
 
 use Bundle\FOS\UserBundle\Util\CanonicalizerInterface;
-
 use Symfony\Component\Security\Role\RoleInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -109,6 +108,11 @@ abstract class User implements UserInterface
     protected $confirmationToken;
 
     /**
+     * @var \DateTime
+     */
+    protected $passwordRequestedAt;
+
+    /**
      * @var Collection
      */
     protected $groups;
@@ -151,7 +155,7 @@ abstract class User implements UserInterface
     public function __construct()
     {
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
-        $this->confirmationToken = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->generateConfirmationToken();
         $this->enabled = false;
         $this->locked = false;
         $this->expired = false;
@@ -585,12 +589,49 @@ abstract class User implements UserInterface
 
     /**
      * Set confirmationToken
+     *
      * @param  string
      * @return null
      */
     public function setConfirmationToken($confirmationToken)
     {
         $this->confirmationToken = $confirmationToken;
+    }
+
+    public function setPasswordRequestedAt(\DateTime $date)
+    {
+        $this->passwordRequestedAt = $date;
+    }
+
+    public function getPasswordRequestedAt()
+    {
+        return $this->passwordRequestedAt;
+    }
+
+    /**
+     * Generate confirmationToken if it is not set
+     *
+     * @return null
+     */
+    public function generateConfirmationToken()
+    {
+        if (null === $this->confirmationToken) {
+            $bytes = false;
+            if (function_exists('openssl_random_pseudo_bytes') && 0 !== stripos(PHP_OS, 'win')) {
+                $bytes = openssl_random_pseudo_bytes(32, $strong);
+
+                if (true !== $strong) {
+                    $bytes = false;
+                }
+            }
+
+            // let's just hope we got a good seed
+            if (false === $bytes) {
+                $bytes = hash('sha256', uniqid(mt_rand(), true), true);
+            }
+
+            $this->confirmationToken = base_convert(bin2hex($bytes), 16, 36);
+        }
     }
 
     public function setRoles(array $roles)

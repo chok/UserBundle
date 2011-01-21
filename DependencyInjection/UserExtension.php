@@ -54,15 +54,24 @@ class UserExtension extends Extension
             ''                      => array('session_create_success_route' => 'fos_user.session_create.success_route'),
             'template'              => 'fos_user.template.%s',
             'form_name'             => 'fos_user.form.%s.name',
-            'confirmation_email'    => 'fos_user.confirmation_email.%s',
         ));
 
-        $this->remapParametersNamespaces($config['class'], $container, array(
-            'model'         => 'fos_user.model.%s.class',
-            'form'          => 'fos_user.form.%s.class',
-            'controller'    => 'fos_user.controller.%s.class',
-            'util'          => 'fos_user.util.%s.class',
-        ));
+        if (isset($config['class'])){
+            $this->remapParametersNamespaces($config['class'], $container, array(
+                'model'         => 'fos_user.model.%s.class',
+                'form'          => 'fos_user.form.%s.class',
+                'controller'    => 'fos_user.controller.%s.class',
+                'util'          => 'fos_user.util.%s.class',
+            ));
+        }
+
+        if (isset($config['email'])){
+            $this->remapParametersNamespaces($config['email'], $container, array(
+                ''                      => array('from_email' => 'fos_user.email.from_email'),
+                'confirmation'          => 'fos_user.email.confirmation.%s',
+                'resetting_password'    => 'fos_user.email.resetting_password.%s',
+            ));
+        }
     }
 
     protected function remapParameters(array $config, ContainerBuilder $container, array $map)
