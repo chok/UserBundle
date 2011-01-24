@@ -19,11 +19,13 @@ class UserManager extends BaseUserManager
     {
         parent::__construct($encoder, $algorithm, $canonicalizer);
 
-        $this->em = $em;
-        $this->repository = $em->getRepository($class);
+        if(class_exists($class)) {
+            $this->em = $em;
+            $this->repository = $em->getRepository($class);
 
-        $metadata = $em->getClassMetadata($class);
-        $this->class = $metadata->name;
+            $metadata = $em->getClassMetadata($class);
+            $this->class = $metadata->name;
+        }
     }
 
     /**
