@@ -57,14 +57,14 @@ class UserExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertParameter('user', 'fos_user.model.user.class');
     }
 
-    public function testUserLoadRepositoryClassWithDefaults()
+    public function testUserLoadManagerClassWithDefaults()
     {
         $this->createEmptyConfiguration();
 
         $this->assertHasDefinition('fos_user.user_manager');
     }
 
-    public function testUserLoadRepositoryClass()
+    public function testUserLoadManagerClass()
     {
         $this->createFullConfiguration();
 
@@ -176,7 +176,7 @@ class UserExtensionTest extends \PHPUnit_Framework_TestCase
         $this->createEmptyConfiguration();
 
         $this->assertParameter('twig', 'fos_user.template.renderer');
-        $this->assertParameter('TwigBundle::form.twig.html', 'fos_user.template.theme');
+        $this->assertParameter('TwigBundle::form.html.twig', 'fos_user.template.theme');
     }
 
     public function testUserLoadTemplateConfig()
