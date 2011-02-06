@@ -2,7 +2,7 @@
 
 namespace FOS\UserBundle\Tests\Security\Encoder;
 
-use Symfony\Component\Security\Encoder\MessageDigestPasswordEncoder;
+use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use FOS\UserBundle\Security\Encoder\EncoderFactory;
 
 class EncoderFactoryTest extends \PHPUnit_Framework_TestCase
@@ -14,10 +14,10 @@ class EncoderFactoryTest extends \PHPUnit_Framework_TestCase
     public function testGetEncoderWithUserAccount()
     {
         $factory = new EncoderFactory(
-            'Symfony\Component\Security\Encoder\MessageDigestPasswordEncoder',
+            'Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder',
             false,
             1,
-            $this->getMock('Symfony\Component\Security\Encoder\EncoderFactoryInterface')
+            $this->getMock('Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface')
         );
 
         $userAccount = $this->getMock('FOS\UserBundle\Model\UserInterface');
@@ -35,8 +35,8 @@ class EncoderFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetEncoderWithGenericAccount()
     {
-        $genericFactory = $this->getMock('Symfony\Component\Security\Encoder\EncoderFactoryInterface');
-        $encoder = $this->getMock('Symfony\Component\Security\Encoder\PasswordEncoderInterface');
+        $genericFactory = $this->getMock('Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface');
+        $encoder = $this->getMock('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface');
 
         $genericFactory
             ->expects($this->once())
@@ -46,6 +46,6 @@ class EncoderFactoryTest extends \PHPUnit_Framework_TestCase
 
         $factory = new EncoderFactory(null , false, 1, $genericFactory);
 
-        $this->assertSame($encoder, $factory->getEncoder($this->getMock('Symfony\Component\Security\User\AccountInterface')));
+        $this->assertSame($encoder, $factory->getEncoder($this->getMock('Symfony\Component\Security\Core\User\AccountInterface')));
     }
 }

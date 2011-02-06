@@ -2,11 +2,12 @@
 
 namespace FOS\UserBundle\Document;
 
-use FOS\UserBundle\Util\CanonicalizerInterface;
-use FOS\UserBundle\Model\UserInterface;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use FOS\UserBundle\Model\UserManager as BaseUserManager;
 use Doctrine\ODM\MongoDB\Proxy\Proxy;
+use FOS\UserBundle\Model\UserInterface;
+use FOS\UserBundle\Model\UserManager as BaseUserManager;
+use FOS\UserBundle\Util\CanonicalizerInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Validator\Constraint;
 
 class UserManager extends BaseUserManager
@@ -15,9 +16,19 @@ class UserManager extends BaseUserManager
     protected $repository;
     protected $class;
 
-    public function __construct($encoder, $algorithm, CanonicalizerInterface $canonicalizer, DocumentManager $dm, $class)
+    /**
+     * Constructor.
+     *
+     * @param EncoderFactoryInterface $encoderFactory
+     * @param string                  $algorithm
+     * @param CanonicalizerInterface  $usernameCanonicalizer
+     * @param CanonicalizerInterface  $emailCanonicalizer
+     * @param DocumentManager         $dm
+     * @param string                  $class
+     */
+    public function __construct(EncoderFactoryInterface $encoderFactory, $algorithm, CanonicalizerInterface $usernameCanonicalizer, CanonicalizerInterface $emailCanonicalizer, DocumentManager $dm, $class)
     {
-        parent::__construct($encoder, $algorithm, $canonicalizer);
+        parent::__construct($encoderFactory, $algorithm, $usernameCanonicalizer, $emailCanonicalizer);
 
         if(class_exists($class)) {
             $this->dm = $dm;
@@ -66,6 +77,7 @@ class UserManager extends BaseUserManager
      */
     public function updateUser(UserInterface $user)
     {
+        $this->updateCanonicalFields($user);
         $this->updatePassword($user);
 
         $this->dm->persist($user);
@@ -115,19 +127,9 @@ class UserManager extends BaseUserManager
             throw new \LogicException('Cannot determine uniqueness of referenced document values');
         }
 
-        switch ($mapping['type']) {
-            case 'one':
-                // TODO: implement support for embed one documents
-            case 'many':
-                // TODO: implement support for embed many documents
-                throw new \RuntimeException('Not Implemented.');
-            case 'hash':
-                return array($fieldName => $this->getFieldValueRecursively($fieldName, $value));
-            case 'collection':
-                return array($mapping['fieldName'] => array('$in' => $value));
-        }
+        $criteria[$field] = $value instanceOf UserInterface ? $classMetadata->getFieldValue($value, $field) : $value;
 
-        return array($mapping['fieldName'] => $value);
+        return $criteria;
     }
 
     /**
@@ -144,15 +146,5 @@ class UserManager extends BaseUserManager
     {
         $pieces = explode('.', $field);
         return $pieces[0];
-    }
-
-    protected function getFieldValueRecursively($fieldName, $value)
-    {
-        $pieces = explode('.', $fieldName);
-        unset($pieces[0]);
-        foreach ($pieces as $piece) {
-            $value = $value[$piece];
-        }
-        return $value;
     }
 }

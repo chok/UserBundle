@@ -9,9 +9,9 @@
 
 namespace FOS\UserBundle\Security\Encoder;
 
-use Symfony\Component\Security\Encoder\EncoderFactoryInterface;
-use Symfony\Component\Security\User\AccountInterface;
 use FOS\UserBundle\Model\UserInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\Security\Core\User\AccountInterface;
 
 /**
  * This factory assumes MessageDigestPasswordEncoder's constructor.
@@ -45,7 +45,7 @@ class EncoderFactory implements EncoderFactoryInterface
     }
 
     /**
-     * @see Symfony\Component\Security\Encoder.EncoderFactory::getEncoder()
+     * @see Symfony\Component\Security\Core\Encoder\EncoderFactory::getEncoder()
      */
     public function getEncoder(AccountInterface $account)
     {

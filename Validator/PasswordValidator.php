@@ -2,7 +2,7 @@
 
 namespace FOS\UserBundle\Validator;
 
-use Symfony\Component\Security\Encoder\EncoderFactoryInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -25,6 +25,11 @@ class PasswordValidator extends ConstraintValidator
         $user = null === $constraint->userProperty ? $object : $object->{$constraint->userProperty};
         $encoder = $this->encoderFactory->getEncoder($user);
 
-        return $encoder->isPasswordValid($user->getPassword(), $raw, $user->getSalt());
+        if (!$encoder->isPasswordValid($user->getPassword(), $raw, $user->getSalt())) {
+            $this->setMessage($constraint->message);
+            return false;
+        }
+
+        return true;
     }
 }

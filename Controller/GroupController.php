@@ -26,7 +26,7 @@ class GroupController extends Controller
     {
         $groups = $this->get('fos_user.group_manager')->findGroups();
 
-        return $this->render('FOSUserBundle:Group:list.html.'.$this->getRenderer(), array('groups' => $groups));
+        return $this->render('FOSUserBundle:Group:list.html.'.$this->getEngine(), array('groups' => $groups));
     }
 
     /**
@@ -36,7 +36,7 @@ class GroupController extends Controller
     {
         $group = $this->findGroupBy('name', $groupname);
 
-        return $this->render('FOSUserBundle:Group:show.html.'.$this->getRenderer(), array('group' => $group));
+        return $this->render('FOSUserBundle:Group:show.html.'.$this->getEngine(), array('group' => $group));
     }
 
     /**
@@ -45,9 +45,12 @@ class GroupController extends Controller
     public function editAction($groupname)
     {
         $group = $this->findGroupBy('name', $groupname);
+        $form = $this->get('fos_user.form.group');
+        $form->setData($group);
+
         $form = $this->createForm($group);
 
-        return $this->render('FOSUserBundle:Group:edit.html.'.$this->getRenderer(), array(
+        return $this->render('FOSUserBundle:Group:edit.html.'.$this->getEngine(), array(
             'form'      => $form,
             'groupname'  => $group->getName()
         ));
@@ -59,8 +62,8 @@ class GroupController extends Controller
     public function updateAction($groupname)
     {
         $group = $this->findGroupBy('name', $groupname);
-        $form = $this->createForm($group);
-        $form->bind($this->get('request')->request->get($form->getName()));
+        $form = $this->get('fos_user.form.group');
+        $form->bind($this->get('request'), $group);
 
         if ($form->isValid()) {
             $this->get('fos_user.group_manager')->updateGroup($group);
@@ -69,7 +72,7 @@ class GroupController extends Controller
             return $this->redirect($groupUrl);
         }
 
-        return $this->render('FOSUserBundle:Group:edit.html.'.$this->getRenderer(), array(
+        return $this->render('FOSUserBundle:Group:edit.html.'.$this->getEngine(), array(
             'form'      => $form,
             'groupname'  => $group->getName()
         ));
@@ -80,9 +83,11 @@ class GroupController extends Controller
      */
     public function newAction()
     {
-        $form = $this->createForm();
+        $user = $this->get('fos_user.group_manager')->createGroup('');
+        $form = $this->get('fos_user.form.group');
+        $form->setData($user);
 
-        return $this->render('FOSUserBundle:Group:new.html.'.$this->getRenderer(), array(
+        return $this->render('FOSUserBundle:Group:new.html.'.$this->getEngine(), array(
             'form' => $form
         ));
     }
@@ -92,8 +97,9 @@ class GroupController extends Controller
      */
     public function createAction()
     {
-        $form = $this->createForm();
-        $form->bind($this->get('request')->request->get($form->getName()));
+        $group = $this->get('fos_user.group_manager')->createGroup('');
+        $form = $this->get('fos_user.form.group');
+        $form->bind($this->get('request'), $group);
 
         if ($form->isValid()) {
             $group = $form->getData();
@@ -103,7 +109,7 @@ class GroupController extends Controller
             return $this->redirect($this->generateUrl('doctrine_user_group_show', array('groupname' => $group->getName())));
         }
 
-        return $this->render('FOSUserBundle:Group:new.html.'.$this->getRenderer(), array(
+        return $this->render('FOSUserBundle:Group:new.html.'.$this->getEngine(), array(
             'form' => $form
         ));
     }
@@ -141,27 +147,9 @@ class GroupController extends Controller
         return $group;
     }
 
-    /**
-     * Create a GroupForm instance and returns it
-     *
-     * @param Group $object
-     * @return FOS\UserBundle\Form\GroupForm
-     */
-    protected function createForm($object = null)
+    protected function getEngine()
     {
-        $form = $this->get('fos_user.form.group');
-        if (null === $object) {
-            $object = $this->get('fos_user.group_manager')->createGroup('');
-        }
-
-        $form->setData($object);
-
-        return $form;
-    }
-
-    protected function getRenderer()
-    {
-        return $this->container->getParameter('fos_user.template.renderer');
+        return $this->container->getParameter('fos_user.template.engine');
     }
 
     protected function setFlash($action, $value)

@@ -23,10 +23,10 @@ Add the FOS namespace to your autoloader
 ----------------------------------------
 
 ::
-    // src/autoload.php
+    // app/autoload.php
     $loader->registerNamespaces(array(
-    'FOS' => __DIR__,
-    // your other namespaces
+        'FOS' => __DIR__.'/../src',
+        // your other namespaces
     );
 
 Add UserBundle to your application kernel
@@ -59,7 +59,7 @@ ORM User class:
 
 ::
 
-    // src/Application/MyBundle/Entity/User.php
+    // src/MyProject/MyBundle/Entity/User.php
 
     namespace Application\MyBundle\Entity;
     use FOS\UserBundle\Entity\User as BaseUser;
@@ -82,7 +82,7 @@ MongoDB User class:
 
 ::
 
-    // src/Application/MyBundle/Document/User.php
+    // src/MyProject/MyBundle/Document/User.php
 
     namespace Application\MyBundle\Document;
     use FOS\UserBundle\Document\User as BaseUser;
@@ -99,11 +99,15 @@ MongoDB User class:
 Changing default class mappings
 -------------------------------
 
+** WARNING **
+This probably doesn't work anymore
+** WARNING **
+
 In case you want to change some of the default mappings, like for example the
 Group class ``id`` generator strategy one must simply replicate the default
 file inside an Application Bundle and then apply the necessary changes:
 
-    cp src/Bundle/FOS/UserBundle/Resources/config/doctrine/metadata/orm/Bundle.FOS.UserBundle.Entity.Group.dcm src/Application/..
+    cp src/FOS/UserBundle/Resources/config/doctrine/metadata/orm/Bundle.FOS.UserBundle.Entity.Group.dcm src/MyProject/..
 
 Configure your project
 ----------------------
@@ -302,7 +306,8 @@ All configuration options are listed below::
             user:     ~
             security: ~
         util:
-            canonicalizer: ~
+            email_canonicalizer:    ~
+            username_canonicalizer: ~
     encoder:
         algorithm:        ~
         encode_as_base64: ~
@@ -318,20 +323,37 @@ All configuration options are listed below::
         resetting_password:
             template:   ~
     template:
-        renderer: ~
-        theme:    ~
+        engine: ~
+        theme:  ~
 
 Templating
 ----------
 
-The template names are not configurable, however Symfony2 by default searches for
-templates according to the ``kernel.bundle_dirs`` container parameter. This means
-it's possible to override any FOS\UserBundle template by simply mimicking the
-directory structure inside the Application directory:
+The template names are not configurable, however Symfony2 makes it possible
+to extend a bundle by creating a new Bundle and implementing a getParent()
+method inside that new Bundle's definition:
 
-For example ``src/Bundle/FOS/UserBundle/Resources/views/User/new.twig`` can be
+    class MyProjectUserBundle extends Bundle
+    {
+        public function getNamespace()
+        {
+            return __NAMESPACE__;
+        }
+
+        public function getPath()
+        {
+            return __DIR__;
+        }
+
+        public function getParent()
+        {
+            return 'FOSUserBundle';
+        }
+    }
+
+For example ``src/FOS/UserBundle/Resources/views/User/new.twig`` can be
 replaced inside an application by putting a file with alternative content in
-``src/Application/FOS/UserBundle/Resources/views/User/new.twig``.
+``src/MyProject/FOS/UserBundle/Resources/views/User/new.twig``.
 
 Validation
 ----------
@@ -340,13 +362,13 @@ The ``Resources/config/validation.xml`` file contains definitions for custom
 validator rules for various classes. The rules for the ``User`` class are all in
 the ``Registration`` validation group so you can choose not to use them.
 
-Canonicalizer
--------------
+Canonicalization
+----------------
 
-The ``Canonicalizer`` is used to canonicalize the username and the email in the
-database. The default one uses ``mb_convert_case``. You can change this
-behavior by changing the canonicalizer in your configuration. The canonicalizer
-must implement ``FOS\UserBundle\Util\CanonicalizerInterface``.
+``Canonicalizer`` services are used to canonicalize the username and the email
+fields for database storage. By default, username and email fields are canonicalized
+in the same manner using ``mb_convert_case()``. You may configure your own class
+for each field provided it implements ``FOS\UserBundle\Util\CanonicalizerInterface``.
 
 Note::
     If you do not have the mbstring extension installed you will need to
